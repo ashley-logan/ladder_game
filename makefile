@@ -4,13 +4,13 @@ OUTPUT ?= output.log
 DEBUG_FLAGS = -g -Og -Wall
 
 build:
-	gcc -g main.c -o ${BIN}
+	clang -g main.c -o ${BIN}
 
 build_optimize:
-	gcc -pg -g -O2 main.c -o ${BIN}
+	clang -pg -g -O2 main.c -o ${BIN}
 
 build_debug: clean_all
-	gcc ${DEBUG_FLAGS} main.c -o ${DEBUG_BIN}
+	clang ${DEBUG_FLAGS} main.c -o ${DEBUG_BIN}
 
 run_fun: build
 	./${BIN} -p ON -n 4 -d dictionary.txt -s RAND -f RAND
