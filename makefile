@@ -1,31 +1,28 @@
-BIN = ladders.exe
-DEBUG_BIN = debug.exe
-OUTPUT ?= output.log
-DEBUG_FLAGS = -g -Og -Wall
+CC = clang
+SRCDIR = src
+SOURCES = $(addprefix $(SRCDIR)/, main.c ladder_node.c word_node.c print_utils.c helpers.c)
+OBJS = $(SOURCES:.c=.o)
+TARGET = ladderGame.exe
 
 build:
-	clang -g main.c -o ${BIN}
+	rm -f $(OBJS) $(TARGET)
+	$(CC) $(SOURCES) -o $(TARGET)
 
-build_optimize:
-	clang -pg -g -O2 main.c -o ${BIN}
 
-build_debug: clean_all
-	clang ${DEBUG_FLAGS} main.c -o ${DEBUG_BIN}
+run:
+	./$(TARGET) -p ON
 
-run_fun: build
-	./${BIN} -p ON -n 4 -d dictionary.txt -s RAND -f RAND
+run_rand: 
+	./$(TARGET) -p ON -n 4 -d dictionary.txt -s RAND -f RAND
 
-run_gdb: build_debug
-	gdb --args ./${DEBUG_BIN} -p ON -n 4 -d dictionary.txt -s data -f code
 
-run_valgrind: build_debug
-	valgrind -s --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=${OUTPUT} ./${DEBUG_BIN} -n 5 -d dictionary.txt -s RAND -f RAND
 
-run_gprof: build_optimize
-	./${BIN} -n 6 -d dictionary.txt -s rubbed -f clayey
-	gprof ${BIN} gmon.out > ${OUTPUT}
+run_fun: 
+	./$(TARGET) -n 6 -d dictionary.txt -s rubbed -f clayey
 
 clean_all:
-	rm -f ${BIN} ${DEBUG_BIN} *.log *.out
+	rm -f $(OBJS) $(TARGET)
+
+.PHONY: build run_rand run_fun clean_all
 
 
